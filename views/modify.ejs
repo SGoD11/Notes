@@ -13,8 +13,8 @@
                     <input type="text" class="mb-2 text-2xl w-max font-semibold rounded-md  hover:text-orange-500 block "
                         name="heading" value=" <%= note.heading %>" />
                        <h2 class="text-3xl mt-2 text-white">Title:</h2>
-                    <input type="text" class="mb-2 text-2xl w-max mt-2 rounded-md font-light px-5  hover:text-orange-500 block" name="paragraph" value="<%= note.title %>" />
-                      
+                    <!-- <input type="text" class="mb-2 text-2xl w-max mt-2 rounded-md font-light px-5  hover:text-orange-500 block" name="paragraph" value="<%= note.title %>" /> -->
+                      <textarea name="paragraph" id="textarea" cols="30" rows="10" ><%= note.title %></textarea>
                     <p class="text-orange-500 text-right">this is the id <%= note.id %>
                     </p>
                 </div>
@@ -31,7 +31,8 @@
                         <h5>Enter the heading : </h5>
                         <input type="text" name="Heading" id="Heading">
                         <p>Enter The Description: </p>
-                        <input type="text" name="Description" id="Description">
+                        <!-- <input type="text" name="Description" id="Description"> -->
+                        <textarea name="Description" id="Description" cols="30" rows="10" ></textarea>
                     </div>
                     <button type="submit"
                         class="bg-white mt-2 py-3 px-4 hover:bg-green-500 hover:text-slate-900 rounded-lg">

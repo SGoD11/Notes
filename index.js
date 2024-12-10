@@ -44,7 +44,20 @@ app.get("/action",(req,res)=>{
         res.render("modify.ejs",{note:selectedNote});
     }
     else if(deleteNote){
-        res.send("trydelete");
+        console.log("the delete note is", deleteNote);
+        
+        const index = datas.findIndex(item => item.id == deleteNote);
+
+        if (index !== -1) {
+            // Remove the object from the array using splice
+            datas.splice(index, 1);  // Removes 1 item at the found index
+            console.log("Updated datas array:", datas);
+        } else {
+            console.log("Item not found!");
+        }
+
+        
+        res.redirect("/");
     }
   } catch (error) {
     res.sendStatus(400).send("wrong oops");
@@ -62,9 +75,6 @@ app.post("/update", (req,res)=>{
         foundData.title = req.body.paragraph;
         foundData.date = req.body.date[0];
     }
-    
-    
-    
     res.redirect("/");
 })
 
