@@ -1,0 +1,44 @@
+<%- include("partials/header.ejs") %>
+
+    <main class="flex justify-center content-center px-5 py-5">
+        <!-- if any id is passed then we gonna make this render -->
+        <% if(locals.note){ %>
+            <form class="card" method="post" action="update">
+                <!-- for passing the date  -->
+                <input type="hidden" name="date" value="<%= new Date().toUTCString() %>">
+
+                <div
+                    class="block max-w-screen-xl p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+                    <h2 class="text-3xl mb-2 text-white">Heading: </h2>
+                    <input type="text" class="mb-2 text-2xl w-max font-semibold rounded-md  hover:text-orange-500 block "
+                        name="heading" value=" <%= note.heading %>" />
+                       <h2 class="text-3xl mt-2 text-white">Title:</h2>
+                    <input type="text" class="mb-2 text-2xl w-max mt-2 rounded-md font-light px-5  hover:text-orange-500 block" name="paragraph" value="<%= note.title %>" />
+                      
+                    <p class="text-orange-500 text-right">this is the id <%= note.id %>
+                    </p>
+                </div>
+                <input type="hidden" name="date" value="<%= note.date %>">
+                <button type="submit" class="bg-white mt-2 py-3 px-4 hover:bg-green-500 hover:text-slate-900 rounded-lg"
+                    name="updateID" value="<%= note.id %>">Update</button>
+            </form>
+
+            <% }else{ %>
+                <form action="create" method="post">
+                    <input type="hidden" name="date" value="<%= new Date().toUTCString() %>">
+                    <div
+                        class="block max-w-screen-xl p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+                        <h5>Enter the heading : </h5>
+                        <input type="text" name="Heading" id="Heading">
+                        <p>Enter The Description: </p>
+                        <input type="text" name="Description" id="Description">
+                    </div>
+                    <button type="submit"
+                        class="bg-white mt-2 py-3 px-4 hover:bg-green-500 hover:text-slate-900 rounded-lg">
+                        Add
+                    </button>
+                </form>
+                <% } %>
+    </main>
+
+    <%- include("partials/footer.ejs") %>

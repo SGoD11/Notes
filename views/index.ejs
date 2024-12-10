@@ -1,15 +1,34 @@
 <%- include("partials/header.ejs") %>
-    <main class="flex justify-center content-center px-5 py-5">
-        <div class="card">
-            <a href="#"
-                class="block max-w-screen-xl p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
-                <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white hover:text-green-500 ">Noteworthy technology
-                    acquisitions 2021</h5>
-                <p class="font-normal text-gray-700 dark:text-gray-400 hover:text-green-300">Here are the biggest enterprise technology
-                    acquisitions of 2021 so far, in reverse chronological order.</p>
-            </a>
-            <button class="bg-white mt-2 px-2 rounded-md text-red-700 hover:text-white hover:bg-red-600" onclick="window.location.href='/delete'" value="deleteID" name="deleteNote">Delete</button>
-            <button class="bg-white mt-2 px-2 rounded-md text-yellow-500 hover:text-white hover:bg-yellow-500" onclick="window.location.href='/edit'" value="editID" name="editNote">Edit</button>
+    <main class="">
+        <% if(locals.data){ %>
+            <% data.forEach(element => { %>
+        <div class="flex justify-center content-center px-5 py-5">
+            <div
+                class="block w-[580px] p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+                <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white hover:text-green-500 " name="heading">
+                <%= element.heading %>   
+                </h5>
+                <p class="font-normal text-gray-700 dark:text-gray-400 hover:text-green-300" name="paragraph">Here are the biggest
+                   <%= element.title %></p>
+           
+            <form action="/action" method="get">
+                <!-- change only the hidden iput id and everything is on go -->
+                <input type="hidden" name="noteId" value="<%= element.id %>">
+
+                <button type="submit"
+                    class="bg-white mt-2 px-4 py-2 rounded-md text-red-700 hover:text-white hover:bg-red-600"
+                    href="/delete" value="<%= element.id %>" name="deleteNote" disabled>Delete</button>
+                <button type="submit"
+                    class="bg-white mt-5 px-4 py-2 rounded-md text-yellow-500 hover:text-white hover:bg-yellow-500"
+                    href="/edit" value="<%= element.id  %>" name="editNote">Edit</button>
+            </form>
         </div>
+        </div>
+        <% }); %>
+        <% } else{ %>
+            <p class="text-center text-3xl text-white ">
+                    Nothing in the database
+            </p>
+            <% } %>
     </main>
     <%- include("partials/footer.ejs") %>

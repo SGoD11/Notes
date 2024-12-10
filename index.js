@@ -4,20 +4,68 @@ import bodyParser from "body-parser";
 const app = express();
 const port = 3000;
 
-app.use(bodyParser.urlencoded({ extended: false }));
+const datas = [{id:1, heading:"this is heading", title: "This is title", date: ''}, { id: 2, heading: "Another heading", title: "Another title", date: '' },];
+
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.use(bodyParser.json());
 
 app.get("/",(req,res)=>{
-    res.render("index.ejs");
+    res.render("index.ejs",{data:datas});
 });
-app.get("/delete",(req,res)=>{
-    res.send("Delete");
 
+app.get("/create",(req,res)=>{
+    res.render("modify.ejs");
+})
+app.post("/create",(req,res)=>{
+    console.log(req.body);
+    const { Heading, Description, date } = req.body;
+    const newProject = {
+        id: datas.length + 1,  // Automatically assign an ID (just an example, you can handle this differently)
+        heading: Heading,
+        title: Description,
+        date: date
+    };
+    datas.push(newProject);
+    res.redirect("/");
+})
+
+app.get("/action",(req,res)=>{
+    // res.send("Done bro");
+    console.log(req.query);
+    const {editNote, deleteNote} = req.query;
+    const noteId = req.query.noteId;
+    console.log(editNote, deleteNote, noteId);
+    
+  try {
+    if(editNote){
+        console.log("the edit Note is ", editNote);
+        const selectedNote = datas.find(item => item.id == editNote);
+        res.render("modify.ejs",{note:selectedNote});
+    }
+    else if(deleteNote){
+        res.send("trydelete");
+    }
+  } catch (error) {
+    res.sendStatus(400).send("wrong oops");
+  }
 });
-app.get("/edit",(req,res)=>{
-    res.send("Edit");
-    console.log(req);
+
+// for update 
+app.post("/update", (req,res)=>{
+    // res.send("updating on the go");
+    console.log(req.body);
+   const foundData = datas.find(item => item.id == req.body.updateID);
+   console.log("This is found data ", foundData);
+    if(foundData){
+        foundData.heading = req.body.heading;
+        foundData.title = req.body.paragraph;
+        foundData.date = req.body.date[0];
+    }
+    
+    
+    
+    res.redirect("/");
 })
 
 app.listen(port, () => {
