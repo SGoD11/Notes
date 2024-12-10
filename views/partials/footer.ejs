@@ -1,6 +1,12 @@
 </body>
-<div class="footer">
-    <footer class="bg-dark text-light ">Made by @Subhajit</footer>
+<div class="min-h-screen flex flex-col">
+    <footer class="footer text-xl text-green-600 font-mono bg-dark text-light mt-auto py-4 text-center">
+        <% 
+            var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            var currentMonth = new Date().getMonth();
+        %>
+        Made by Subhajit @<%= (`${new Date().getFullYear()} ${monthNames[currentMonth]}`) %>
+    </footer>
 </div>
 
 </html>
