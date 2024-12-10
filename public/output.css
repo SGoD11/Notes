@@ -889,6 +889,11 @@ video {
   color: rgb(153 27 27 / var(--tw-text-opacity, 1));
 }
 
+.hover\:text-green-300:hover {
+  --tw-text-opacity: 1;
+  color: rgb(134 239 172 / var(--tw-text-opacity, 1));
+}
+
 @media (min-width: 1024px) {
   .lg\:px-8 {
     padding-left: 2rem;

@@ -5,11 +5,11 @@
                 class="block max-w-screen-xl p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
                 <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white hover:text-green-500 ">Noteworthy technology
                     acquisitions 2021</h5>
-                <p class="font-normal text-gray-700 dark:text-gray-400">Here are the biggest enterprise technology
+                <p class="font-normal text-gray-700 dark:text-gray-400 hover:text-green-300">Here are the biggest enterprise technology
                     acquisitions of 2021 so far, in reverse chronological order.</p>
             </a>
-            <button class="bg-white mt-2 px-2 rounded-md text-red-700 hover:text-white hover:bg-red-600" onclick="">Delete</button>
-            <button class="bg-white mt-2 px-2 rounded-md text-yellow-500 hover:text-white hover:bg-yellow-500" onclick="">Edit</button>
+            <button class="bg-white mt-2 px-2 rounded-md text-red-700 hover:text-white hover:bg-red-600" onclick="window.location.href='/delete'" value="deleteID" name="deleteNote">Delete</button>
+            <button class="bg-white mt-2 px-2 rounded-md text-yellow-500 hover:text-white hover:bg-yellow-500" onclick="window.location.href='/edit'" value="editID" name="editNote">Edit</button>
         </div>
     </main>
     <%- include("partials/footer.ejs") %>
