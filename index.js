@@ -17,7 +17,7 @@ app.use(bodyParser.json());
 app.get("/", async (req, res) => {
     try {
        const response = await axios.get(`${API}/api/posts`);
-       console.log("this is response ", response.data);
+    //    console.log("this is response ", response.data);
        res.render("index.ejs", { data: response.data });
     } catch (error) {
        console.log(error.message);
@@ -35,7 +35,7 @@ app.post("/create",async (req,res)=>{
     
     try {
         const response = await axios.post(`${API}/api/posts`, req.body);
-        console.log("this is response on create",response.data);
+        // console.log("this is response on create",response.data);
         res.redirect("/");
       } catch (error) {
         res.status(500).json({ message: "Error creating post" });
@@ -44,7 +44,7 @@ app.post("/create",async (req,res)=>{
 
 app.get("/action",async (req,res)=>{
     // res.send("Done bro");
-    console.log(req.query);
+    // console.log(req.query);
     const {editNote, deleteNote} = req.query;
     const noteId = req.query.noteId;
     console.log(editNote, deleteNote, noteId);
@@ -52,9 +52,9 @@ app.get("/action",async (req,res)=>{
   try {
     if(editNote){
         //for getting the data from the api and sending it in frontend
-        console.log("the edit Note is ", editNote);
+        // console.log("the edit Note is ", editNote);
         const response = await axios.get(`${API}/api/posts/${editNote}`);
-        console.log("this is response for edit",response.data);
+        // console.log("this is response for edit",response.data);
         const data = response.data;
         res.render("modify.ejs",{note:response.data});
     }
@@ -80,17 +80,20 @@ app.get("/action",async (req,res)=>{
 });
 
 // for update 
-app.post("/update", (req,res)=>{
-    // res.send("updating on the go");
-    console.log(req.body);
-   const foundData = datas.find(item => item.id == req.body.updateID);
-   console.log("This is found data ", foundData);
-    if(foundData){
-        foundData.heading = req.body.heading;
-        foundData.title = req.body.paragraph;
-        foundData.date = req.body.date[0];
-    }
-    res.redirect("/");
+app.post("/update",async (req,res)=>{
+   
+    console.log("this is for update",req.body);
+
+    try {
+        const response = await axios.patch(
+          `${API}/api/posts/${req.body.updateID}`,
+          req.body
+        );
+        console.log("this is after the update",response.data);
+        res.redirect("/");
+      } catch (error) {
+        res.status(500).json({ message: "Error updating post" });
+      }
 })
 
 app.listen(port, () => {
