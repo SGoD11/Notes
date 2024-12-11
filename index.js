@@ -60,19 +60,13 @@ app.get("/action",async (req,res)=>{
     }
     else if(deleteNote){
         console.log("the delete note is", deleteNote);
-        
-        const index = datas.findIndex(item => item.id == deleteNote);
-
-        if (index !== -1) {
-            // Remove the object from the array using splice
-            datas.splice(index, 1);  // Removes 1 item at the found index
-            console.log("Updated datas array:", datas);
-        } else {
-            console.log("Item not found!");
-        }
-
-        
-        res.redirect("/");
+       try {
+        const response = await axios.delete(`${API}/api/posts/${deleteNote}`);
+        console.log("post deleted", response.data);
+        res.redirect("/")
+       } catch (error) {
+        console.log("error deleting data",error.message)
+       }
     }
   } catch (error) {
     res.sendStatus(400).send("wrong oops");
