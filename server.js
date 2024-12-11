@@ -70,9 +70,9 @@ app.patch("/api/posts/:id", (req, res) => {
   const post = posts.find((p) => p.id === parseInt(req.params.id));
   if (!post) return res.status(404).json({ message: "Post not found" });
 
-  if (req.body.title) post.title = req.body.title;
-  if (req.body.content) post.content = req.body.content;
-  if (req.body.author) post.author = req.body.author;
+  if (req.body.heading) post.title = req.body.heading;
+  if (req.body.title) post.content = req.body.title;
+  
 
   res.json(post);
 });
