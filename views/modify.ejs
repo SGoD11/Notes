@@ -2,6 +2,8 @@
 
     <main class="flex justify-center content-center px-5 py-5">
         <!-- if any id is passed then we gonna make this render -->
+
+        <!-- this is only for the edit section  -->
         <% if(locals.note){ %>
             <form class="card" method="post" action="update">
                 <!-- for passing the date  -->
@@ -24,6 +26,8 @@
             </form>
 
             <% }else{ %>
+
+                <!-- this is for the creation of the new post if no edit form is passed  -->
                 <form action="create" method="post">
                     <input type="hidden" name="date" value="<%= new Date().toUTCString() %>">
                     <div

@@ -12,6 +12,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.use(bodyParser.json());
 
+
+// the first page to reload
 app.get("/", async (req, res) => {
     try {
        const response = await axios.get(`${API}/api/posts`);
@@ -23,20 +25,21 @@ app.get("/", async (req, res) => {
     }
  });
 
+
+ //for creation of new post 
 app.get("/create",(req,res)=>{
     res.render("modify.ejs");
-})
-app.post("/create",(req,res)=>{
-    console.log(req.body);
-    const { Heading, Description, date } = req.body;
-    const newProject = {
-        id: datas.length + 1,  // Automatically assign an ID (just an example, you can handle this differently)
-        heading: Heading,
-        title: Description,
-        date: date
-    };
-    datas.push(newProject);
-    res.redirect("/");
+});
+//for adding the data in the creation note
+app.post("/create",async (req,res)=>{
+    
+    try {
+        const response = await axios.post(`${API}/api/posts`, req.body);
+        console.log("this is response on create",response.data);
+        res.redirect("/");
+      } catch (error) {
+        res.status(500).json({ message: "Error creating post" });
+      }
 })
 
 app.get("/action",(req,res)=>{

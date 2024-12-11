@@ -56,9 +56,9 @@ app.post("/api/posts", (req, res) => {
   const newId = lastId += 1;
   const post = {
     id: newId,
-    heading: req.body.heading,
-    title: req.body.title,
-    date: new Date(),
+    heading: req.body.Heading,
+    title: req.body.Description,
+    date: req.body.date,
   };
   lastId = newId;
   posts.push(post);
