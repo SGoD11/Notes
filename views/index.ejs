@@ -1,6 +1,6 @@
 <%- include("partials/header.ejs") %>
     <main class="">
-        <% if(locals.data){ %>
+        <% if(locals.data && data.length> 0){ %>
             <% data.forEach(element=> { %>
                 <div class="flex justify-center content-center px-5 py-5">
                     <div
@@ -27,7 +27,7 @@
                     </div>
                 </div>
                 <% }); %>
-                    <% } else if(locals.data.length === 0){ %>
+                    <% } else if(locals.data.length < 1){ %>
                         <div class="flex justify-center items-center h-screen">
                             <p class="text-center text-3xl text-white ">
                                 Nothing in the database
