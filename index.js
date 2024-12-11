@@ -1,8 +1,10 @@
 import express from "express";
 import bodyParser from "body-parser";
+import axios from "axios";
 
 const app = express();
 const port = 3000;
+const API = 'http://localhost:4000';
 
 const datas = [{id:1, heading:"this is heading", title: "This is title", date: ''}, { id: 2, heading: "Another heading", title: "Another title", date: '' },];
 
@@ -10,9 +12,16 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.use(bodyParser.json());
 
-app.get("/",(req,res)=>{
-    res.render("index.ejs",{data:datas});
-});
+app.get("/", async (req, res) => {
+    try {
+       const response = await axios.get(`${API}/api/posts`);
+       console.log("this is response ", response.data);
+       res.render("index.ejs", { data: response.data });
+    } catch (error) {
+       console.log(error.message);
+       res.render("index.ejs", { data: [] });  // or handle error appropriately
+    }
+ });
 
 app.get("/create",(req,res)=>{
     res.render("modify.ejs");
