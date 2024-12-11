@@ -42,7 +42,7 @@ app.post("/create",async (req,res)=>{
       }
 })
 
-app.get("/action",(req,res)=>{
+app.get("/action",async (req,res)=>{
     // res.send("Done bro");
     console.log(req.query);
     const {editNote, deleteNote} = req.query;
@@ -51,9 +51,12 @@ app.get("/action",(req,res)=>{
     
   try {
     if(editNote){
+        //for getting the data from the api and sending it in frontend
         console.log("the edit Note is ", editNote);
-        const selectedNote = datas.find(item => item.id == editNote);
-        res.render("modify.ejs",{note:selectedNote});
+        const response = await axios.get(`${API}/api/posts/${editNote}`);
+        console.log("this is response for edit",response.data);
+        const data = response.data;
+        res.render("modify.ejs",{note:response.data});
     }
     else if(deleteNote){
         console.log("the delete note is", deleteNote);
