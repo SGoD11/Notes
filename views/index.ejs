@@ -1,34 +1,38 @@
 <%- include("partials/header.ejs") %>
     <main class="">
         <% if(locals.data){ %>
-            <% data.forEach(element => { %>
-        <div class="flex justify-center content-center px-5 py-5">
-            <div
-                class="block w-[580px] p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
-                <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white hover:text-green-500 " name="heading">
-                <%= element.heading %>   
-                </h5>
-                <p class="font-normal text-gray-700 dark:text-gray-400 hover:text-green-300" name="paragraph">
-                   <%= element.title %></p>
-           
-            <form action="/action" method="get">
-                <!-- change only the hidden iput id and everything is on go -->
-                <input type="hidden" name="noteId" value="<%= element.id %>">
+            <% data.forEach(element=> { %>
+                <div class="flex justify-center content-center px-5 py-5">
+                    <div
+                        class="block w-[580px] p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+                        <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white hover:text-green-500 "
+                            name="heading">
+                            <%= element.heading %>
+                        </h5>
+                        <p class="font-normal text-gray-700 dark:text-gray-400 hover:text-green-300" name="paragraph">
+                            <%= element.title %>
+                        </p>
 
-                <button type="submit"
-                    class="bg-white mt-2 px-4 py-2 rounded-md text-red-700 hover:text-white hover:bg-red-600"
-                    href="/delete" value="<%= element.id %>" name="deleteNote" >Delete</button>
-                <button type="submit"
-                    class="bg-white mt-5 px-4 py-2 rounded-md text-yellow-500 hover:text-white hover:bg-yellow-500"
-                    href="/edit" value="<%= element.id  %>" name="editNote">Edit</button>
-            </form>
-        </div>
-        </div>
-        <% }); %>
-        <% } else{ %>
-            <p class="text-center text-3xl text-white ">
-                    Nothing in the database
-            </p>
-            <% } %>
+                        <form action="/action" method="get">
+                            <!-- change only the hidden iput id and everything is on go -->
+                            <input type="hidden" name="noteId" value="<%= element.id %>">
+
+                            <button type="submit"
+                                class="bg-white mt-2 px-4 py-2 rounded-md text-red-700 hover:text-white hover:bg-red-600"
+                                href="/delete" value="<%= element.id %>" name="deleteNote">Delete</button>
+                            <button type="submit"
+                                class="bg-white mt-5 px-4 py-2 rounded-md text-yellow-500 hover:text-white hover:bg-yellow-500"
+                                href="/edit" value="<%= element.id  %>" name="editNote">Edit</button>
+                        </form>
+                    </div>
+                </div>
+                <% }); %>
+                    <% } else if(locals.data.length === 0){ %>
+                        <div class="flex justify-center items-center h-screen">
+                            <p class="text-center text-3xl text-white ">
+                                Nothing in the database
+                            </p>
+                        </div>
+                        <% } %>
     </main>
     <%- include("partials/footer.ejs") %>
