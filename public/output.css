@@ -649,6 +649,10 @@ video {
   gap: 2rem;
 }
 
+.text-wrap {
+  text-wrap: wrap;
+}
+
 .rounded-lg {
   border-radius: 0.5rem;
 }
@@ -747,6 +751,11 @@ video {
   line-height: 1.75rem;
 }
 
+.text-sm {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
 .font-bold {
   font-weight: 700;
 }
@@ -761,6 +770,10 @@ video {
 
 .font-semibold {
   font-weight: 600;
+}
+
+.font-extralight {
+  font-weight: 200;
 }
 
 .tracking-tight {
@@ -805,6 +818,11 @@ video {
 .text-yellow-500 {
   --tw-text-opacity: 1;
   color: rgb(234 179 8 / var(--tw-text-opacity, 1));
+}
+
+.text-rose-500 {
+  --tw-text-opacity: 1;
+  color: rgb(244 63 94 / var(--tw-text-opacity, 1));
 }
 
 .shadow {
