@@ -17,7 +17,7 @@ db.connect();
 
 async function fetchData() {
   const result = await db.query('SELECT * FROM public."NoteePad"');
-  console.log("This is result", result.rows);
+  // console.log("This is result", result.rows);
   return result.rows;
 }
 async function insertData(newId,heading,title,date) {
@@ -31,6 +31,12 @@ async function insertData(newId,heading,title,date) {
 
   }
 }
+async function findPost(id){
+const found = await db.query('SELECT * FROM public."NoteePad" WHERE id = $1',[id]);
+console.log("Id is triggered",found.rows);
+return found.rows;
+}
+
 // In-memory data store
 let posts = await fetchData();
 
@@ -42,22 +48,15 @@ app.use(bodyParser.json());
 
 // GET all posts
 app.get("/api/posts", async (req, res) => {
-  try {
-    // Fetch posts asynchronously
-    const posts = await fetchData();
-
-    console.log(posts); // Log the fetched posts for debugging
-    res.json(posts);    // Send the fetched posts as the response
-  } catch (error) {
-    console.log("Error fetching posts:", error);
-    res.status(500).json({ error: "Error fetching posts" });
-  }
+  // console.log( posts);
+  res.json(await fetchData());
 });
 
-
 // GET a specific post by id
-app.get("/api/posts/:id", (req, res) => {
-  const post = posts.find((p) => p.id === parseInt(req.params.id));
+app.get("/api/posts/:id", async (req, res) => {
+  const found = await findPost(parseInt(req.params.id));
+  const post =  found.find((p) => p.id === parseInt(req.params.id));
+  console.log("this is matching post ", post);
   if (!post) return res.status(404).json({ message: "Post not found" });
   res.json(post);
 });
@@ -88,8 +87,8 @@ app.post("/api/posts", async (req, res) => {
 
 
 // PATCH a post when you just want to update one parameter
-app.patch("/api/posts/:id", (req, res) => {
-  const post = posts.find((p) => p.id === parseInt(req.params.id));
+app.patch("/api/posts/:id",async (req, res) => {
+  const post = await fetchData().find((p) => p.id === parseInt(req.params.id));
   if (!post) return res.status(404).json({ message: "Post not found" });
 
   if (req.body.heading) post.heading = req.body.heading;
