@@ -1,4 +1,4 @@
-import express from "express";
+import express, { json } from "express";
 import bodyParser from "body-parser";
 import pg from "pg";
 
@@ -20,7 +20,17 @@ async function fetchData() {
   console.log("This is result", result.rows);
   return result.rows;
 }
+async function insertData(newId,heading,title,date) {
+  try {
+    const result = await db.query('INSERT INTO public."NoteePad" (id, heading,title,date) VALUES ($1,$2,$3,$4)',[newId,heading,title,date]);
+    // return json("successful");
+    console.log("successful insertion of data");
+  } catch (error) {
+    console.log("error inserting data", error);
+    // return error;
 
+  }
+}
 // In-memory data store
 let posts = await fetchData();
 
@@ -31,10 +41,19 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // GET all posts
-app.get("/api/posts", (req, res) => {
-  console.log(posts);
-  res.json(posts);
+app.get("/api/posts", async (req, res) => {
+  try {
+    // Fetch posts asynchronously
+    const posts = await fetchData();
+
+    console.log(posts); // Log the fetched posts for debugging
+    res.json(posts);    // Send the fetched posts as the response
+  } catch (error) {
+    console.log("Error fetching posts:", error);
+    res.status(500).json({ error: "Error fetching posts" });
+  }
 });
+
 
 // GET a specific post by id
 app.get("/api/posts/:id", (req, res) => {
@@ -44,18 +63,29 @@ app.get("/api/posts/:id", (req, res) => {
 });
 
 // POST a new post
-app.post("/api/posts", (req, res) => {
+app.post("/api/posts", async (req, res) => {
   const newId = lastId += 1;
-  const post = {
-    id: newId,
-    heading: req.body.Heading,
-    title: req.body.Description,
-    date: req.body.date,
-  };
-  lastId = newId;
-  posts.push(post);
-  res.status(201).json(post);
+  const { Heading, Description, date } = req.body;
+
+  // Log the received data for debugging
+  console.log("Received data:", req.body);
+
+  // Check for required fields
+  if (!Heading || !Description || !date) {
+    return res.status(400).json({ error: "Missing required fields" });
+  }
+
+  try {
+    // Call insertData and await the result
+    await insertData(newId, Heading, Description, date);
+    res.status(200).json({ message: "Data inserted successfully" });
+  } catch (error) {
+    console.log("Error inserting data:", error);
+    res.status(500).json({ error: "Error inserting data" });
+  }
 });
+
+
 
 // PATCH a post when you just want to update one parameter
 app.patch("/api/posts/:id", (req, res) => {
