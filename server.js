@@ -16,7 +16,7 @@ const db = new pg.Client({
 db.connect();
 
 async function fetchData() {
-  const result = await db.query('SELECT * FROM public."NoteePad"');
+  const result = await db.query('SELECT * FROM public."NoteePad" ORDER BY id');
   // console.log("This is result", result.rows);
   return result.rows;
 }
