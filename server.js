@@ -34,7 +34,20 @@ async function insertData(newId,heading,title,date) {
 async function findPost(id){
 const found = await db.query('SELECT * FROM public."NoteePad" WHERE id = $1',[id]);
 console.log("Id is triggered",found.rows);
+if (found.rows.length === 0)
+  return [{message: "Nothing Found"}];
 return found.rows;
+}
+
+async function updatePost(id,heading,title,date){
+ try {
+  const update = await db.query('UPDATE public."NoteePad" SET heading= $1, title=$2, date=$3 WHERE id = $4 ',[heading,title,date,id]);
+  console.log("the update data is ", update.rows);
+  console.log("function call done")
+ } catch (error) {
+  console.log("function call not done");
+ }
+
 }
 
 // In-memory data store
@@ -48,8 +61,8 @@ app.use(bodyParser.json());
 
 // GET all posts
 app.get("/api/posts", async (req, res) => {
-  // console.log( posts);
-  res.json(await fetchData());
+  console.log( posts);
+  res.json(posts);
 });
 
 // GET a specific post by id
@@ -88,14 +101,21 @@ app.post("/api/posts", async (req, res) => {
 
 // PATCH a post when you just want to update one parameter
 app.patch("/api/posts/:id",async (req, res) => {
-  const post = await fetchData().find((p) => p.id === parseInt(req.params.id));
-  if (!post) return res.status(404).json({ message: "Post not found" });
 
-  if (req.body.heading) post.heading = req.body.heading;
-  if (req.body.paragraph) post.title = req.body.paragraph;
-  if (req.body.date) post.date = req.body.date[0];
-
-  res.json(post);
+  // const post = posts.find((p) => p.id === parseInt(req.params.id));
+  // if (!post) return res.status(404).json({ message: "Post not found" });
+  const id = req.params.id;
+  const heading = req.body.heading;
+  const title = req.body.paragraph;
+  const date = req.body.date[0];
+ try {
+  await updatePost(id,heading,title,date);
+  console.log("going on");
+ } catch (error) {
+  console.log("Not going on");
+ } 
+ 
+  // res.json(post);
 });
 
 // DELETE a specific post by providing the post id
