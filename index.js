@@ -18,7 +18,7 @@ app.get("/", async (req, res) => {
     try {
        const response = await axios.get(`${API}/api/posts`);
     //    console.log("this is response ", response.data);
-       res.render("index.ejs", { data: response.data });
+       res.render("test.ejs", { data: response.data });
     } catch (error) {
        console.log(error.message);
        res.render("index.ejs", { data: [] });  // or handle error appropriately
