@@ -49,11 +49,19 @@ async function updatePost(id,heading,title,date){
  }
 
 }
+async function deletePost(id) {
+  try {
+    const result = await db.query('DELETE FROM public."NoteePad" WHERE id = $1', [id]);
+    console.log("Post deleted:", result);
+  } catch (error) {
+    console.log("Error deleting post:", error);
+    throw error;
+  }
+}
+
 
 // In-memory data store
-let posts = await fetchData();
 
-let lastId = posts.length;
 
 // Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -61,8 +69,8 @@ app.use(bodyParser.json());
 
 // GET all posts
 app.get("/api/posts", async (req, res) => {
-  console.log( posts);
-  res.json(posts);
+  console.log( await fetchData());
+  res.json(await fetchData());
 });
 
 // GET a specific post by id
@@ -76,6 +84,8 @@ app.get("/api/posts/:id", async (req, res) => {
 
 // POST a new post
 app.post("/api/posts", async (req, res) => {
+  let posts = await fetchData();
+  let lastId = posts.length;
   const newId = lastId += 1;
   const { Heading, Description, date } = req.body;
 
@@ -119,14 +129,20 @@ app.patch("/api/posts/:id",async (req, res) => {
 });
 
 // DELETE a specific post by providing the post id
-app.delete("/api/posts/:id", (req, res) => {
-  const index = posts.findIndex((p) => p.id === parseInt(req.params.id));
-  if (index === -1) return res.status(404).json({ message: "Post not found" });
+app.delete("/api/posts/:id", async (req, res) => {
+  const id = parseInt(req.params.id);
 
-  posts.splice(index, 1);
-  res.json({ message: "Post deleted" });
+  try {
+    const post = await findPost(id);
+    if (!post) return res.status(404).json({ message: "Post not found" });
+
+    // Delete the post from the database
+    await deletePost(id);
+    res.json({ message: "Post deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "Error deleting post" });
+  }
 });
-
 app.listen(port, () => {
   console.log(`API is running at http://localhost:${port}`);
 });
