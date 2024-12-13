@@ -1,5 +1,5 @@
-<div class="min-h-screen flex flex-col footer relative  bottom-0  ">
-    <footer class="footer text-xl text-green-600 font-mono bg-dark text-light mt-auto  text-right mr-1 py-4 ">
+<div class="flex flex-col min-h-[30vh]">
+    <footer class="footer text-xl text-green-600 font-mono bg-slate-800 text-light mt-auto text-right mr-1 py-4">
         <% 
             var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
             var currentMonth = new Date().getMonth();
@@ -7,8 +7,6 @@
         Made by Subhajit @<%= (`${new Date().getFullYear()} ${monthNames[currentMonth]}`) %>
     </footer>
 </div>
-
 </body>
-
 
 </html>

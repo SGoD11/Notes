@@ -1,17 +1,23 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-body{
-    height: 100vh;
-    width: auto;
+
+
+
+.date-animated {
+    position: relative;
+    display: inline-block;
+    transition: all 0.3s ease;
 }
-nav{
-    height: auto;
+
+.date-animated:hover {
+    background-image: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
+    background-clip: text;
+    color: transparent;
+    animation: rainbow 2s infinite linear;
 }
-main{
-    height: 80vh;
-}
-.footer{
-    height: 10vh;
-    bottom: -30vh;
+
+@keyframes rainbow {
+    0% { background-position: 0%; }
+    100% { background-position: 100%; }
 }
