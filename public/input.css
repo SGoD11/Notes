@@ -13,4 +13,5 @@ main{
 }
 .footer{
     height: 10vh;
+    bottom: -30vh;
 }
