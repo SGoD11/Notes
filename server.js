@@ -20,17 +20,18 @@ async function fetchData() {
   // console.log("This is result", result.rows);
   return result.rows;
 }
-async function insertData(newId,heading,title,date) {
+async function insertData(heading, title, date) {
   try {
-    const result = await db.query('INSERT INTO public."NoteePad" (id, heading,title,date) VALUES ($1,$2,$3,$4)',[newId,heading,title,date]);
-    // return json("successful");
-    console.log("successful insertion of data");
+    const result = await db.query(
+      'INSERT INTO public."NoteePad" (heading, title, date) VALUES ($1, $2, $3)',
+      [heading, title, date]
+    );
+    console.log("Successful insertion of data:", result);
   } catch (error) {
-    console.log("error inserting data", error);
-    // return error;
-
+    console.log("Error inserting data", error);
   }
 }
+
 async function findPost(id){
 const found = await db.query('SELECT * FROM public."NoteePad" WHERE id = $1',[id]);
 console.log("Id is triggered",found.rows);
@@ -39,16 +40,31 @@ if (found.rows.length === 0)
 return found.rows;
 }
 
-async function updatePost(id,heading,title,date){
- try {
-  const update = await db.query('UPDATE public."NoteePad" SET heading= $1, title=$2, date=$3 WHERE id = $4 ',[heading,title,date,id]);
-  console.log("the update data is ", update.rows);
-  console.log("function call done")
- } catch (error) {
-  console.log("function call not done");
- }
+async function updatePost(id, heading, title, date) {
+  try {
+    // Ensure that the values are valid before attempting the query
+    if (!id || !heading || !title || !date) {
+      throw new Error("Invalid input data");
+    }
 
+    const update = await db.query(
+      'UPDATE public."NoteePad" SET heading = $1, title = $2, date = $3 WHERE id = $4',
+      [heading, title, date, id]
+    );
+
+    if (update.rowCount === 0) {
+      // This means no rows were updated (post with that id might not exist)
+      throw new Error("Post not found or no changes made");
+    }
+
+    console.log("Post updated successfully:", update);
+  } catch (error) {
+    console.error("Error updating post:", error.message);
+    throw error; // Re-throw the error to be caught in the route handler
+  }
 }
+
+
 async function deletePost(id) {
   try {
     const result = await db.query('DELETE FROM public."NoteePad" WHERE id = $1', [id]);
@@ -84,9 +100,6 @@ app.get("/api/posts/:id", async (req, res) => {
 
 // POST a new post
 app.post("/api/posts", async (req, res) => {
-  let posts = await fetchData();
-  let lastId = posts.length;
-  const newId = lastId += 1;
   const { Heading, Description, date } = req.body;
 
   // Log the received data for debugging
@@ -99,7 +112,7 @@ app.post("/api/posts", async (req, res) => {
 
   try {
     // Call insertData and await the result
-    await insertData(newId, Heading, Description, date);
+    await insertData(Heading, Description, date);
     res.status(200).json({ message: "Data inserted successfully" });
   } catch (error) {
     console.log("Error inserting data:", error);
@@ -108,25 +121,36 @@ app.post("/api/posts", async (req, res) => {
 });
 
 
-
 // PATCH a post when you just want to update one parameter
-app.patch("/api/posts/:id",async (req, res) => {
-
-  // const post = posts.find((p) => p.id === parseInt(req.params.id));
-  // if (!post) return res.status(404).json({ message: "Post not found" });
+app.patch("/api/posts/:id", async (req, res) => {
   const id = req.params.id;
-  const heading = req.body.heading;
-  const title = req.body.paragraph;
-  const date = req.body.date[0];
- try {
-  await updatePost(id,heading,title,date);
-  console.log("going on");
- } catch (error) {
-  console.log("Not going on");
- } 
- 
-  // res.json(post);
+  const { heading, paragraph, date } = req.body;
+
+  // Check for required fields
+  if (!heading || !paragraph || !date) {
+    return res.status(400).json({ error: "Missing required fields" });
+  }
+
+  // Ensure date is correctly formatted (e.g., a single string in ISO 8601 format)
+  let formattedDate;
+  if (Array.isArray(date)) {
+    formattedDate = date[1]; // assuming the second date is correct
+  } else {
+    formattedDate = date;
+  }
+
+  try {
+    // Call the updatePost function to update the record in the database
+    await updatePost(id, heading, paragraph, formattedDate);
+    res.status(200).json({ message: "Post updated successfully" });
+  } catch (error) {
+    console.log("Error updating post:", error.message); // Log the error message
+    res.status(500).json({ error: error.message || "Error updating post" });
+  }
 });
+
+
+
 
 // DELETE a specific post by providing the post id
 app.delete("/api/posts/:id", async (req, res) => {
