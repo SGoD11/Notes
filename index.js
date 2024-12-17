@@ -26,6 +26,11 @@ app.post("/login", async (req,res)=>{
  const {email, password} = req.body;
  const result = await axios.post(`${API}/api/login`,{email : email, password: password});
  console.log("this is login result", result.data);
+ if(result.data.condition){
+  res.redirect("/")
+} else{
+  res.redirect("/register");
+}
 });
 
 
@@ -42,6 +47,11 @@ app.post("/register", async (req,res)=>{
   const {username, email, password} = req.body;
   const result = await axios.post(`${API}/api/register`, {username: username, email:email, password : password});
   console.log("this is register result",result.data);
+  if(result.data.condition){
+    res.redirect("/")
+  } else{
+    res.sendStatus(500).send("something is wrong");
+  }
 });
 
 

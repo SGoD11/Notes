@@ -211,15 +211,16 @@ app.post("/api/register", async (req, res) => {
         console.log("crypto ", username);
       }
     });
+    res.send({message: "Inserted new user", condition: true});
   } catch (error) {
     console.log("Tere was an error", error.message);
   }
-  res.send("everything is ok");
+ 
 });
 
 app.post("/api/login", async (req, res) => {
   console.log("this is loginn ", req.body);
-  res.send("chal rha hai");
+  // res.send("chal rha hai");
   const { email, password } = req.body;
   try {
     
@@ -234,13 +235,19 @@ app.post("/api/login", async (req, res) => {
           console.log("error in comparing", err)
         } else{
           console.log("this is the compared result", result);
+          
         }
     
        });
+       res.send({message: "found entry", condition: true});
+    }
+    else{
+      res.send({message: "not found entry", condition: false});
     }
    
   } catch (error) {
     console.log("there was a error making login ", error);
+    res.sendStatus(500).send({message: "something wrong in the api"});
   }
 });
 
