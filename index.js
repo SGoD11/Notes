@@ -15,8 +15,16 @@ app.use(express.static("public"));
 app.use(bodyParser.json());
 
 // auth
-app.get("/auth", async(req,res)=>{
-  res.render("auth.ejs",{current: true})
+// login
+app.get("/login", async(req,res)=>{
+  res.render("login.ejs",{current: true})
+});
+
+
+
+// register
+app.get("/register", async(req,res)=>{
+  res.render("register.ejs",{current: true})
 })
 
 // the first page to reload
