@@ -1,9 +1,11 @@
 import express, { json } from "express";
 import bodyParser from "body-parser";
 import pg from "pg";
+import bcrypt from "bcrypt";
 
 const app = express();
 const port = 4000;
+const saltRounds =10;
 
 //database
 const db = new pg.Client({
@@ -29,6 +31,19 @@ async function insertData(heading, title, date) {
     console.log("Successful insertion of data:", result);
   } catch (error) {
     console.log("Error inserting data", error);
+  }
+}
+
+async function registerUser(userName, email, hashPassword) {
+  try {
+  console.log("register user function", userName, " email ",email," hashpassword ", hashPassword);
+    const result = await db.query(
+      'INSERT INTO public.auth (email, username, password) VALUES ($1, $2, $3)',
+      [email, userName, hashPassword]
+    );
+    console.log("Successful insertion of data:");
+  } catch (error) {
+    console.log("Error inserting data");
   }
 }
 
@@ -167,6 +182,29 @@ app.delete("/api/posts/:id", async (req, res) => {
     res.status(500).json({ error: "Error deleting post" });
   }
 });
+
+
+app.post("/api/register", async (req,res)=>{
+  console.log("api request",req.body);
+  const {username, email, password} = req.body;
+
+ try {
+  bcrypt.hash(password, saltRounds, async function(err, hash) {
+    if (err) {
+     console.log("error", err)
+    } else {
+    await registerUser(username, email, hash);
+    console.log("crypto ", username);
+    }
+ });
+ } catch (error) {
+  console.log("Tere was an error", error.message);
+ }
+   res.send("everything is ok");
+})
+
+
+
 app.listen(port, () => {
   console.log(`API is running at http://localhost:${port}`);
 });
