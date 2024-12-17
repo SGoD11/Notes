@@ -1,17 +1,23 @@
 import express from "express";
 import bodyParser from "body-parser";
 import axios from "axios";
+import bcrypt from "bcrypt";
 
 const app = express();
 const port = 3000;
 const API = 'http://localhost:4000';
+const saltRounds = 10;
 
-const datas = [{id:1, heading:"this is heading", title: "This is title", date: ''}, { id: 2, heading: "Another heading", title: "Another title", date: '' },];
+
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.use(bodyParser.json());
 
+// auth
+app.get("/auth", async(req,res)=>{
+  res.render("auth.ejs",{current: true})
+})
 
 // the first page to reload
 app.get("/", async (req, res) => {
