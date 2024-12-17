@@ -20,12 +20,25 @@ app.get("/login", async(req,res)=>{
   res.render("login.ejs",{current: true})
 });
 
+app.post("/login", async (req,res)=>{
 
+  console.log("this is login \n", req.body);
+  // { email: 'asfefsfd@email.com', password: 'asfafegfeas' }
+
+});
 
 // register
 app.get("/register", async(req,res)=>{
   res.render("register.ejs",{current: true})
-})
+});
+
+app.post("/register", async (req,res)=>{
+
+  console.log("this is login \n", req.body);
+  // { email: 'subhajit13dhar@gmail.com', password: 'afsefewaegfaege' }
+  
+});
+
 
 // the first page to reload
 app.get("/", async (req, res) => {
