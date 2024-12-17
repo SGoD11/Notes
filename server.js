@@ -5,7 +5,7 @@ import bcrypt from "bcrypt";
 
 const app = express();
 const port = 4000;
-const saltRounds =10;
+const saltRounds = 10;
 
 //database
 const db = new pg.Client({
@@ -36,7 +36,7 @@ async function insertData(heading, title, date) {
 
 async function registerUser(userName, email, hashPassword) {
   try {
-  console.log("register user function", userName, " email ",email," hashpassword ", hashPassword);
+    console.log("register user function", userName, " email ", email, " hashpassword ", hashPassword);
     const result = await db.query(
       'INSERT INTO public.auth (email, username, password) VALUES ($1, $2, $3)',
       [email, userName, hashPassword]
@@ -47,12 +47,26 @@ async function registerUser(userName, email, hashPassword) {
   }
 }
 
-async function findPost(id){
-const found = await db.query('SELECT * FROM public."NoteePad" WHERE id = $1',[id]);
-console.log("Id is triggered",found.rows);
-if (found.rows.length === 0)
-  return [{message: "Nothing Found"}];
-return found.rows;
+async function checkUser(email) {
+  try {
+    const result = await db.query('select * from auth where email=$1', [email]);
+    console.log("this is what i found ", result.rows);
+   if(result.rows.length === 1){
+     console.log("returned success ful");
+    return result.rows;
+   }
+   return false;
+  } catch (error) {
+    console.log("This is the error ", error);
+  }
+}
+
+async function findPost(id) {
+  const found = await db.query('SELECT * FROM public."NoteePad" WHERE id = $1', [id]);
+  console.log("Id is triggered", found.rows);
+  if (found.rows.length === 0)
+    return [{ message: "Nothing Found" }];
+  return found.rows;
 }
 
 async function updatePost(id, heading, title, date) {
@@ -100,14 +114,14 @@ app.use(bodyParser.json());
 
 // GET all posts
 app.get("/api/posts", async (req, res) => {
-  console.log( await fetchData());
+  console.log(await fetchData());
   res.json(await fetchData());
 });
 
 // GET a specific post by id
 app.get("/api/posts/:id", async (req, res) => {
   const found = await findPost(parseInt(req.params.id));
-  const post =  found.find((p) => p.id === parseInt(req.params.id));
+  const post = found.find((p) => p.id === parseInt(req.params.id));
   console.log("this is matching post ", post);
   if (!post) return res.status(404).json({ message: "Post not found" });
   res.json(post);
@@ -184,24 +198,51 @@ app.delete("/api/posts/:id", async (req, res) => {
 });
 
 
-app.post("/api/register", async (req,res)=>{
-  console.log("api request",req.body);
-  const {username, email, password} = req.body;
+app.post("/api/register", async (req, res) => {
+  console.log("api request", req.body);
+  const { username, email, password } = req.body;
 
- try {
-  bcrypt.hash(password, saltRounds, async function(err, hash) {
-    if (err) {
-     console.log("error", err)
-    } else {
-    await registerUser(username, email, hash);
-    console.log("crypto ", username);
+  try {
+    bcrypt.hash(password, saltRounds, async function (err, hash) {
+      if (err) {
+        console.log("error", err);
+      } else {
+        await registerUser(username, email, hash);
+        console.log("crypto ", username);
+      }
+    });
+  } catch (error) {
+    console.log("Tere was an error", error.message);
+  }
+  res.send("everything is ok");
+});
+
+app.post("/api/login", async (req, res) => {
+  console.log("this is loginn ", req.body);
+  res.send("chal rha hai");
+  const { email, password } = req.body;
+  try {
+    
+    const report = await checkUser(email);
+    console.log("this is the report ", report);
+    if (report){
+
+      const hashpassword = report[0].password; // fetching the hash from the db
+      bcrypt.compare(password, hashpassword, async function(err, result){
+
+        if(err){
+          console.log("error in comparing", err)
+        } else{
+          console.log("this is the compared result", result);
+        }
+    
+       });
     }
- });
- } catch (error) {
-  console.log("Tere was an error", error.message);
- }
-   res.send("everything is ok");
-})
+   
+  } catch (error) {
+    console.log("there was a error making login ", error);
+  }
+});
 
 
 

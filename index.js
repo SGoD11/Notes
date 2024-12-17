@@ -1,13 +1,12 @@
 import express from "express";
 import bodyParser from "body-parser";
 import axios from "axios";
-import bcrypt from "bcrypt";
+
 
 const app = express();
 const port = 3000;
 const API = 'http://localhost:4000';
-const saltRounds = 10;
-let hashing;
+
 
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -24,16 +23,12 @@ app.post("/login", async (req,res)=>{
 
   console.log("this is login \n", req.body);
   // { email: 'asfefsfd@email.com', password: 'asfafegfeas' }
-  const myPlaintextPassword = req.body.password;
-  bcrypt.compare(myPlaintextPassword, hashing, function(err, result) {
-    if(err){
-      console.log("login error", err);
-    } else {
-      console.log("the login result ", result);
-    }
+ const {email, password} = req.body;
+ const result = await axios.post(`${API}/api/login`,{email : email, password: password});
+ console.log("this is login result", result.data);
 });
 
-});
+
 
 // register
 app.get("/register", async(req,res)=>{
@@ -46,7 +41,7 @@ app.post("/register", async (req,res)=>{
   // { email: 'subhajit13dhar@gmail.com', password: 'afsefewaegfaege' }
   const {username, email, password} = req.body;
   const result = await axios.post(`${API}/api/register`, {username: username, email:email, password : password});
-  console.log("this is result",result.data);
+  console.log("this is register result",result.data);
 });
 
 
